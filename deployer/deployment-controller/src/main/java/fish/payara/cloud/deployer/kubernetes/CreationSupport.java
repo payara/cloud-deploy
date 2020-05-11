@@ -106,6 +106,8 @@ class CreationSupport {
                 return getContextRoot();
             case "VERSION":
                 return "VERSION";
+            case "SUBSCRIPTION_ID":
+                return deployment.getNamespace().getSubscriptionId();
             default:
                 throw new IllegalArgumentException("No value provided for variable "+var);
         }

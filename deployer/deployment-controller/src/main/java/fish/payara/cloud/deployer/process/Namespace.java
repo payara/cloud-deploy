@@ -78,4 +78,8 @@ public class Namespace {
     public String toString() {
         return project+"-"+stage;
     }
+
+    public String getSubscriptionId() {
+        return "fixed-subscription";
+    }
 }

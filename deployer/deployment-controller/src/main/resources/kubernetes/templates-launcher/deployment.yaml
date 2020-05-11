@@ -6,7 +6,8 @@ metadata:
     app.kubernetes.io/name: $(NAME)
     app.kubernetes.io/component: payara-app
     app.kubernetes.io/part-of: $(ID)
-    app.kubernetes.io/managed-by: payara-cloud     
+    app.kubernetes.io/managed-by: payara-cloud
+    payara.cloud/subscription-id: $(SUBSCRIPTION_ID)
     #app.kubernetes.io/version: $(VERSION)
   annotations:
     #payara.cloud/artifact-version: XXX
@@ -28,13 +29,16 @@ spec:
         app.kubernetes.io/instance: $(NAME)
         app.kubernetes.io/component: payara-app
         app.kubernetes.io/part-of: $(ID)
-        app.kubernetes.io/managed-by: payara-cloud   
+        app.kubernetes.io/managed-by: payara-cloud
+        payara.cloud/subscription-id: $(SUBSCRIPTION_ID)
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "8080"
         prometheus.io/scheme: "http"
     spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
       containers:
       - name: micro
         image: payara.azurecr.io/payara/cloud-instance:latest

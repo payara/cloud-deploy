@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: $(NAME)
     app.kubernetes.io/component: payara-app
     app.kubernetes.io/part-of: $(ID)
-    app.kubernetes.io/managed-by: payara-cloud     
+    app.kubernetes.io/managed-by: payara-cloud
     #app.kubernetes.io/version: $(VERSION)
   annotations:
     # These annotations define the deployment
@@ -31,7 +31,7 @@ spec:
         app.kubernetes.io/instance: $(NAME)
         app.kubernetes.io/component: payara-app
         app.kubernetes.io/part-of: $(ID)
-        app.kubernetes.io/managed-by: payara-cloud   
+        app.kubernetes.io/managed-by: payara-cloud
       annotations:
         payara.cloud/artifact-url: $(URL)
         prometheus.io/scrape: "true"
@@ -39,6 +39,8 @@ spec:
         prometheus.io/port: "8080"
         prometheus.io/scheme: "http"
     spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
       initContainers:
         - name: download-app
           # This curl image downloads the artifacts from URL in annotation

@@ -39,18 +39,21 @@
 package fish.payara.cloud.instance.tasks.value;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import ru.lanwen.wiremock.ext.WiremockResolver;
-import ru.lanwen.wiremock.ext.WiremockUriResolver;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import ru.lanwen.wiremock.ext.WiremockResolver;
+import ru.lanwen.wiremock.ext.WiremockUriResolver;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -60,28 +63,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 })
 public class HttpTest {
 
+    private static final String TEXT = "Příliš žluťoučký kůň úpěl ďábelské ódy";
+
     @Test
     public void downloadsAsUtf8String(@WiremockResolver.Wiremock WireMockServer server) {
         server.stubFor(get(urlEqualTo("/utf8"))
-            .willReturn(aResponse().withBody("áááá"))
+            .willReturn(aResponse().withBody(TEXT))
         );
 
         var fileSource = new FileValueUnion();
         fileSource.setHttpGet(StringValueUnion.fromString(server.url("utf8")));
 
-        assertEquals("áááá", fileSource.contents());
+        assertEquals(TEXT, fileSource.contents());
     }
 
     @Test
     public void respectsContentEncoding(@WiremockResolver.Wiremock WireMockServer server) {
         server.stubFor(get(urlEqualTo("/windows1250")).willReturn(
                 aResponse()
-                        .withBody("áááá".getBytes(Charset.forName("windows-1250")))
+                        .withBody(TEXT.getBytes(Charset.forName("windows-1250")))
                         .withHeader("Content-Type", "text/plain;charset=windows-1250")));
         var fileSource = new FileValueUnion();
         fileSource.setHttpGet(StringValueUnion.fromString(server.url("windows1250")));
 
-        assertEquals("áááá", fileSource.contents());
+        assertEquals(TEXT, fileSource.contents());
     }
 
     @Test

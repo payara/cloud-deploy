@@ -38,9 +38,12 @@
 
 package fish.payara.cloud.instance;
 
+import fish.payara.cloud.instance.applicator.APIApplicator;
 import fish.payara.cloud.instance.applicator.CLIApplicator;
 import fish.payara.cloud.instance.applicator.CLIBootstrap;
 import fish.payara.cloud.instance.applicator.Repackager;
+import fish.payara.micro.PayaraMicro;
+import fish.payara.micro.boot.AdminCommandRunner;
 import fish.payara.micro.boot.PayaraMicroBoot;
 import fish.payara.micro.boot.PayaraMicroLauncher;
 
@@ -55,11 +58,22 @@ public interface Applicator {
      * @return an instance
      */
     static Applicator getInstance() {
-        // API has limited configuration options, chiefly there's no access
-        // to preboot/postboot commands
-        //PayaraMicro.unpackJars();
-        //PayaraMicro.setUpackedJarDir();
-        //PayaraMicro instance = PayaraMicro.getInstance();
+        try {
+            // probe for new 5.202 API
+            Class.forName("fish.payara.micro.boot.AdminCommandRunner");
+
+            try {
+                // proble for flat classpath
+                Class.forName("fish.payara.micro.impl.PayaraMicroImpl");
+                return new APIApplicator(APIApplicator::bootFromFlatClasspath);
+            } catch (ClassNotFoundException e) {
+                // we're not on flat classpath
+            }
+            PayaraMicro.unpackJars();
+            return new APIApplicator(PayaraMicro::getInstance);
+        } catch (ClassNotFoundException e) {
+            // that's ok, it's version 5.201
+        }
 
         // Payara micro launcher gives us commands via command line arguments
         CLIBootstrap bootstrap = PayaraMicroLauncher::create;

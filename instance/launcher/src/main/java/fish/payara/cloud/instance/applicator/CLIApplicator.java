@@ -68,7 +68,6 @@ public class CLIApplicator implements Applicator  {
 
     private Map<String,String> systemProperties = new HashMap<>();
     private Map<String,String> deployments = new LinkedHashMap<>();
-    private List<String> arguments = new ArrayList<>();
 
     static class Command {
         List<String> contents;
@@ -100,15 +99,6 @@ public class CLIApplicator implements Applicator  {
     }
 
     @Override
-    public void addCommandlineArgument(String argument, String value) {
-        Applicator.super.addCommandlineArgument(argument, value);
-        arguments.add(argument);
-        if (value != null) {
-            arguments.add(value);
-        }
-    }
-
-    @Override
     public void addDeployment(String artifact, String contextPath) {
         deployments.put(artifact, contextPath);
     }
@@ -126,7 +116,6 @@ public class CLIApplicator implements Applicator  {
         completeArguments.addAll(renderPostdeploy());
         completeArguments.addAll(renderSystemProperties());
         completeArguments.addAll(renderDeployments());
-        completeArguments.addAll(arguments);
         return bootstrap.bootstrap(completeArguments.toArray(String[]::new));
     }
 

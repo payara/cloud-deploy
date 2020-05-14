@@ -102,22 +102,6 @@ public interface Applicator {
 
     void addPostDeployCommand(String command, String... arguments);
 
-    default void addCommandlineArgument(String argument) {
-        addCommandlineArgument(argument, null);
-    }
-
-    default void addCommandlineArgument(String argument, String value) {
-        switch (argument) {
-            case "--deploy":
-            case "--deploymentdir":
-            case "--systemproperties":
-            case "--prebootcommandfile":
-            case "--postbootcommandfile":
-            case "--postdeploycommandfile":
-                throw new IllegalArgumentException("Use specialized command for "+argument);
-        }
-    }
-
     void addDeployment(String artifact, String contextPath);
 
     default void addDeployment(String artifact) {

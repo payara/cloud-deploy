@@ -14,11 +14,6 @@ This repository contains a GitHub Action to automate the deployment of your appl
 - `app_name`: **Required**. The name of the app to deploy (e.g., your-app). 
 - `artifact_location`: **Required**. The path to the .war file to deploy (e.g., ./target/my-app.war).
 
-## Outputs
-
-`deployment-status`
-The status of the deployment, indicating whether it was successful or failed.
-
 ## Example Usage
 
 ```yaml

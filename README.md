@@ -1,27 +1,31 @@
 # Payara Cloud Deployment GitHub Action
 
-This repository contains a GitHub Action to automate the deployment of your application to Payara Cloud using the Payara Cloud CLI (PCL). The action allows you to deploy a .jar or .war file to Payara Cloud by specifying various parameters like the namespace, app name, and artifact location.
+This repository contains a GitHub Action to automate the deployment of your application to Payara Cloud using the Payara Cloud CLI (PCL). The action allows you to deploy a .war file to Payara Cloud by specifying various parameters like the subscription id, namespace, app name, and artifact location.
 
 ### Features
 - Deploy Java applications to Payara Cloud. 
 - Accepts manual inputs for deployment parameters.
 
 ---
-## How to Use the Workflow
+## Inputs
 
-### Trigger the Workflow
-1. Go to the **Actions** tab in your GitHub repository. 
-2. Select the **Deploy to Payara Cloud** workflow from the list. 
-3. Click **Run workflow**.
+- `cloud_subscription_id`: **Required**. The subscription ID of your Payara Cloud account.
+- `namespace`: **Required**. The namespace under which your app will be deployed (e.g., your-namespace). 
+- `app_name`: **Required**. The name of the app to deploy (e.g., your-app). 
+- `artifact_location`: **Required**. The path to the .war file to deploy (e.g., ./target/my-app.war).
 
+## Outputs
 
-### Provide Input Parameters
-When prompted, fill in the following inputs:
+`deployment-status`
+The status of the deployment, indicating whether it was successful or failed.
 
-- `cloud_subscription_id`: The subscription ID of your Payara Cloud account.
-- `namespace`: The namespace under which your app will be deployed (e.g., your-namespace). 
-- `app_name`: The name of the app to deploy (e.g., your-app). 
-- `artifact_location`: The path to the .war file to deploy (e.g., ./target/my-app.war).
+## Example Usage
 
-After providing the inputs, click Run workflow to trigger the deployment.
-
+```yaml
+uses: payara/actions/cloud-deploy@v1
+with:
+    cloud_subscription_id: 'your-subscription-id'
+    namespace: 'your-namespace'
+    app_name: 'your-app'
+    artifact_location: 'your-artifact.war'
+```

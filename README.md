@@ -4,7 +4,6 @@ This repository contains a GitHub Action to automate the deployment of your appl
 
 ### Features
 - Deploy Java applications to Payara Cloud. 
-- Accepts manual inputs for deployment parameters.
 
 ---
 ## Inputs

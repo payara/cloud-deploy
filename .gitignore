@@ -1,1 +1,5 @@
+
 .idea
+node_modules
+package-lock.json
+>>>>>>> 50c5e69 (CLOUD-3716 Added baseline)

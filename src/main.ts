@@ -6,6 +6,7 @@ import { deployToPayaraCloud } from './actions/deploy';
 
 async function main() {
         core.debug('Starting PCL command...');
+        console.log('Starting PCL command...');
     try {
         // Retrieve input parameters
         const token = core.getInput('token');

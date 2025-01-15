@@ -6,10 +6,10 @@ import { deployToPayaraCloud } from './actions/deploy';
 
 async function main() {
         core.debug('Starting PCL command...');
-        console.log('Starting PCL command...');
     try {
         // Retrieve input parameters
         const token = core.getInput('token');
+        const subscriptionName = core.getInput('subscription_name');
         const namespace = core.getInput('namespace');
         const appName = core.getInput('app_name');
         const artifact = core.getInput('artifact');
@@ -28,10 +28,10 @@ async function main() {
         await downloadPclJarFile(pclBinaryUrl, pclJarPath);
 
         // Step 1: Upload the WAR file
-        await uploadToPayaraCloud(pclJarPath, namespace, appName, artifact);
+        await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact);
 
         // Step 2: Deploy the WAR file
-        await deployToPayaraCloud(pclJarPath, namespace, appName);
+        await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
 
         core.info('Deployment to Payara Cloud completed.');
     } catch (error) {

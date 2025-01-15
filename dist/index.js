@@ -29186,12 +29186,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deployToPayaraCloud = deployToPayaraCloud;
 const pcl_1 = __nccwpck_require__(5850);
-function deployToPayaraCloud(pclExecutable, namespace, appName) {
+function deployToPayaraCloud(pclExecutable, subscriptionName, namespace, appName) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.info('Deploying WAR file to Payara Cloud...');
-            yield (0, pcl_1.runPclCommand)(pclExecutable, ['deploy', '-n', namespace, '-a', appName]);
-            console.info('WAR file deployed successfully.');
+            const args = ['deploy', '-n', namespace, '-a', appName];
+            if (subscriptionName) {
+                args.push('-s', subscriptionName);
+            }
+            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
         }
         catch (error) {
             throw new Error(`Failed to deploy WAR file: ${error.message}`);
@@ -29219,12 +29221,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadToPayaraCloud = uploadToPayaraCloud;
 const pcl_1 = __nccwpck_require__(5850);
-function uploadToPayaraCloud(pclExecutable, namespace, appName, warFile) {
+function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName, warFile) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.info('Uploading WAR file to Payara Cloud...');
-            yield (0, pcl_1.runPclCommand)(pclExecutable, ['upload', '-n', namespace, '-a', appName, warFile]);
-            console.info('WAR file uploaded successfully.');
+            const args = ['upload', '-n', namespace, '-a', appName];
+            if (subscriptionName) {
+                args.push('-s', subscriptionName);
+            }
+            args.push(warFile);
+            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
         }
         catch (error) {
             throw new Error(`Failed to upload WAR file: ${error.message}`);
@@ -29366,10 +29371,10 @@ const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('Starting PCL command...');
-        console.log('Starting PCL command...');
         try {
             // Retrieve input parameters
             const token = core.getInput('token');
+            const subscriptionName = core.getInput('subscription_name');
             const namespace = core.getInput('namespace');
             const appName = core.getInput('app_name');
             const artifact = core.getInput('artifact');
@@ -29384,9 +29389,9 @@ function main() {
             core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
             // Step 1: Upload the WAR file
-            yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, namespace, appName, artifact);
+            yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
             // Step 2: Deploy the WAR file
-            yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, namespace, appName);
+            yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName);
             core.info('Deployment to Payara Cloud completed.');
         }
         catch (error) {
@@ -29465,7 +29470,7 @@ function ensureJavaIsAvailable() {
             });
         }
         catch (error) {
-            core.setFailed('Java is not installed or not available in the PATH. Please ensure actions/setup-java is used in your workflow.');
+            core.setFailed('Java is not installed. Please ensure actions/setup-java is used in your workflow.');
             throw new Error('Java not available');
         }
     });

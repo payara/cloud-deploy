@@ -22,7 +22,7 @@ describe('PCL Commands', () => {
             const ensureJavaIsAvailable = jest.requireActual('../pcl').ensureJavaIsAvailable;
             await expect(ensureJavaIsAvailable()).rejects.toThrow('Java not available');
             expect(core.setFailed).toHaveBeenCalledWith(
-                'Java is not installed or not available in the PATH. Please ensure actions/setup-java is used in your workflow.'
+                'Java is not installed. Please ensure actions/setup-java is used in your workflow.'
             );
         });
     });

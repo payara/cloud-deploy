@@ -11,7 +11,7 @@ export async function ensureJavaIsAvailable() {
             }
         });
     } catch (error) {
-        core.setFailed('Java is not installed or not available in the PATH. Please ensure actions/setup-java is used in your workflow.');
+        core.setFailed('Java is not installed. Please ensure actions/setup-java is used in your workflow.');
         throw new Error('Java not available');
     }
 }

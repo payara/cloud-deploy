@@ -4,9 +4,9 @@ inputs:
   token:
     description: 'token obtained from `pcl login --print-token` and stored in secrets'
     required: true
-  cloud_subscription_id:
-    description: 'The Payara Cloud subscription ID'
-    required: true
+  subscription_name:
+    description: 'Optional. Only required if your account has access to multiple subscriptions. Provide the subscription name to specify which subscription to use.'
+    required: false
   namespace:
     description: 'The namespace under which the app is deployed'
     required: true

@@ -4,10 +4,18 @@ import * as core from '@actions/core';
 export async function ensureJavaIsAvailable() {
     try {
         await exec.exec('java', ['-version'], {
-            silent: false,
+            silent: true,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
-                stderr: (data: Buffer) => core.error(data.toString()),
+                stderr: (data: Buffer) => {
+                    const message = data.toString();
+                    // Only log certain critical errors as stderr
+                    if (message.includes('ERROR') || message.includes('Failed')) {
+                        core.error(message);
+                    } else {
+                        core.info(message); // Log informational messages in stdout
+                    }
+                },
             }
         });
     } catch (error) {
@@ -27,7 +35,15 @@ export async function runPclCommand(command: string, args: string[]) {
             silent: false,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
-                stderr: (data: Buffer) => core.error(data.toString()),
+                stderr: (data: Buffer) => {
+                    const message = data.toString();
+                    // Only log certain critical errors as stderr
+                    if (message.includes('ERROR') || message.includes('Failed')) {
+                        core.error(message);
+                    } else {
+                        core.info(message); // Log informational messages in stdout
+                    }
+                },
             },
         });
     } catch (error) {

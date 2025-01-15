@@ -29370,7 +29370,6 @@ const upload_1 = __nccwpck_require__(4424);
 const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug('Starting PCL command...');
         try {
             // Retrieve input parameters
             const token = core.getInput('token');
@@ -29385,19 +29384,14 @@ function main() {
             // Download PCL
             const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
             const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
-            core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
             core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
             yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
             if (isDeploy) {
-                core.info('Deploying to Payara Cloud...');
                 yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName);
             }
-            core.info('Deployment to Payara Cloud completed.');
         }
         catch (error) {
-            core.debug(`Error: ${error.message}`);
-            core.debug(`Error: ${error.stack}`);
             core.setFailed(`Action failed: ${error.message}`);
         }
     });
@@ -29463,10 +29457,19 @@ function ensureJavaIsAvailable() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield exec.exec('java', ['-version'], {
-                silent: false,
+                silent: true,
                 listeners: {
                     stdout: (data) => core.info(data.toString()),
-                    stderr: (data) => core.error(data.toString()),
+                    stderr: (data) => {
+                        const message = data.toString();
+                        // Only log certain critical errors as stderr
+                        if (message.includes('ERROR') || message.includes('Failed')) {
+                            core.error(message);
+                        }
+                        else {
+                            core.info(message); // Log informational messages in stdout
+                        }
+                    },
                 }
             });
         }
@@ -29486,7 +29489,16 @@ function runPclCommand(command, args) {
                 silent: false,
                 listeners: {
                     stdout: (data) => core.info(data.toString()),
-                    stderr: (data) => core.error(data.toString()),
+                    stderr: (data) => {
+                        const message = data.toString();
+                        // Only log certain critical errors as stderr
+                        if (message.includes('ERROR') || message.includes('Failed')) {
+                            core.error(message);
+                        }
+                        else {
+                            core.info(message); // Log informational messages in stdout
+                        }
+                    },
                 },
             });
         }

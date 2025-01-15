@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 export async function ensureJavaIsAvailable() {
     try {
         await exec.exec('java', ['-version'], {
-            silent: true,
+            silent: false,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
                 stderr: (data: Buffer) => core.error(data.toString()),
@@ -20,8 +20,11 @@ export async function runPclCommand(command: string, args: string[]) {
     await ensureJavaIsAvailable();
 
     try {
-        await exec.exec('java', ['-jar', command, ...args], {
-            silent: true,
+        const javaArgs = ['-jar', command, ...args];
+        core.debug(`Running PCL command: java ${javaArgs.join(' ')}`);
+
+        await exec.exec('java', javaArgs, {
+            silent: false,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
                 stderr: (data: Buffer) => core.error(data.toString()),

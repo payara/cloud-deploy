@@ -31,7 +31,7 @@ async function main() {
         await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact);
 
         // Step 2: Deploy the WAR file
-        await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
+        // await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
 
         core.info('Deployment to Payara Cloud completed.');
     } catch (error) {

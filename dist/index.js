@@ -29169,41 +29169,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7930:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deployToPayaraCloud = deployToPayaraCloud;
-const pcl_1 = __nccwpck_require__(5850);
-function deployToPayaraCloud(pclExecutable, subscriptionName, namespace, appName) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const args = ['deploy', '-n', namespace, '-a', appName];
-            if (subscriptionName) {
-                args.push('-s', subscriptionName);
-            }
-            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
-        }
-        catch (error) {
-            throw new Error(`Failed to deploy WAR file: ${error.message}`);
-        }
-    });
-}
-
-
-/***/ }),
-
 /***/ 4424:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -29226,7 +29191,7 @@ function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName
         try {
             const args = ['upload', '-n', namespace, '-a', appName];
             if (subscriptionName) {
-                args.push('-s', subscriptionName);
+                args.push('-s', `"${subscriptionName}"`);
             }
             args.push(warFile);
             yield (0, pcl_1.runPclCommand)(pclExecutable, args);
@@ -29367,7 +29332,6 @@ const core = __importStar(__nccwpck_require__(8478));
 const path = __importStar(__nccwpck_require__(6928));
 const download_1 = __nccwpck_require__(9341);
 const upload_1 = __nccwpck_require__(4424);
-const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('Starting PCL command...');
@@ -29391,7 +29355,7 @@ function main() {
             // Step 1: Upload the WAR file
             yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
             // Step 2: Deploy the WAR file
-            yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName);
+            // await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
             core.info('Deployment to Payara Cloud completed.');
         }
         catch (error) {
@@ -29462,7 +29426,7 @@ function ensureJavaIsAvailable() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield exec.exec('java', ['-version'], {
-                silent: true,
+                silent: false,
                 listeners: {
                     stdout: (data) => core.info(data.toString()),
                     stderr: (data) => core.error(data.toString()),
@@ -29479,8 +29443,10 @@ function runPclCommand(command, args) {
     return __awaiter(this, void 0, void 0, function* () {
         yield ensureJavaIsAvailable();
         try {
-            yield exec.exec('java', ['-jar', command, ...args], {
-                silent: true,
+            const javaArgs = ['-jar', command, ...args];
+            core.debug(`Running PCL command: java ${javaArgs.join(' ')}`);
+            yield exec.exec('java', javaArgs, {
+                silent: false,
                 listeners: {
                     stdout: (data) => core.info(data.toString()),
                     stderr: (data) => core.error(data.toString()),

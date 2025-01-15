@@ -11,7 +11,7 @@ export async function uploadToPayaraCloud(
         const args: string[] = ['upload', '-n', namespace, '-a', appName];
 
         if (subscriptionName) {
-            args.push('-s', `"${subscriptionName}"`);
+            args.push('-s', subscriptionName);
         }
 
         args.push(warFile);

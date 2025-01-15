@@ -29288,23 +29288,21 @@ const axios = __importStar(__nccwpck_require__(8063));
 const fs = __importStar(__nccwpck_require__(9896));
 function downloadPclJarFile(url, outputPath) {
     return __awaiter(this, void 0, void 0, function* () {
-        const writer = fs.createWriteStream(outputPath);
         try {
-            const response = yield axios.default.get(url, { responseType: 'stream' });
+            const writer = fs.createWriteStream(outputPath);
+            const response = yield axios.default({
+                url,
+                method: 'GET',
+                responseType: 'stream',
+            });
             response.data.pipe(writer);
             return new Promise((resolve, reject) => {
                 writer.on('finish', resolve);
-                writer.on('error', (err) => {
-                    // Remove partially downloaded file on error
-                    fs.unlink(outputPath, () => reject(err));
-                });
+                writer.on('error', reject);
             });
         }
         catch (error) {
             throw new Error(`Failed to download PCL binaries: ${error.message}`);
-        }
-        finally {
-            writer.close();
         }
     });
 }
@@ -29367,6 +29365,8 @@ const upload_1 = __nccwpck_require__(4424);
 const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug('Starting PCL command...');
+        console.log('Starting PCL command...');
         try {
             // Retrieve input parameters
             const token = core.getInput('token');
@@ -29377,9 +29377,11 @@ function main() {
             // Set environment variables
             process.env.PCL_AUTH_TOKEN = token;
             process.env.PCL_ENDPOINT = 'https://manage.dev02-head.payara.cloud'; // Or use a dynamic input
+            process.env.PCL_CLIENT_ID = 'OPWL6h4SUxPHa1rMZ9flPStKkxnMQj8H';
             // Download PCL
             const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
             const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
+            core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
             // Step 1: Upload the WAR file
             yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, namespace, appName, artifact);
@@ -29388,6 +29390,8 @@ function main() {
             core.info('Deployment to Payara Cloud completed.');
         }
         catch (error) {
+            core.debug(`Error: ${error.message}`);
+            core.debug(`Error: ${error.stack}`);
             core.setFailed(`Action failed: ${error.message}`);
         }
     });

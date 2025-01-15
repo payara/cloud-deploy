@@ -29191,7 +29191,7 @@ function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName
         try {
             const args = ['upload', '-n', namespace, '-a', appName];
             if (subscriptionName) {
-                args.push('-s', `"${subscriptionName}"`);
+                args.push('-s', subscriptionName);
             }
             args.push(warFile);
             yield (0, pcl_1.runPclCommand)(pclExecutable, args);

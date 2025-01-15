@@ -1,7 +1,7 @@
 import * as exec from '@actions/exec';
 import * as core from '@actions/core';
 
-async function ensureJavaIsAvailable() {
+export async function ensureJavaIsAvailable() {
     try {
         await exec.exec('java', ['-version'], {
             silent: true,

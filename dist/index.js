@@ -29341,7 +29341,7 @@ function main() {
             const subscriptionName = core.getInput('subscription_name');
             const namespace = core.getInput('namespace');
             const appName = core.getInput('app_name');
-            const artifact = core.getInput('artifact');
+            const artifact = core.getInput('artifact_location');
             const pclVersion = core.getInput('pcl_version') || '1.0.1';
             // Set environment variables
             process.env.PCL_AUTH_TOKEN = token;

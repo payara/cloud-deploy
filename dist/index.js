@@ -29169,6 +29169,41 @@ module.exports = {
 
 /***/ }),
 
+/***/ 7930:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deployToPayaraCloud = deployToPayaraCloud;
+const pcl_1 = __nccwpck_require__(5850);
+function deployToPayaraCloud(pclExecutable, subscriptionName, namespace, appName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const args = ['deploy', '-n', namespace, '-a', appName];
+            if (subscriptionName) {
+                args.push('-s', subscriptionName);
+            }
+            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
+        }
+        catch (error) {
+            throw new Error(`Failed to deploy WAR file: ${error.message}`);
+        }
+    });
+}
+
+
+/***/ }),
+
 /***/ 4424:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -29332,6 +29367,7 @@ const core = __importStar(__nccwpck_require__(8478));
 const path = __importStar(__nccwpck_require__(6928));
 const download_1 = __nccwpck_require__(9341);
 const upload_1 = __nccwpck_require__(4424);
+const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug('Starting PCL command...');
@@ -29342,11 +29378,10 @@ function main() {
             const namespace = core.getInput('namespace');
             const appName = core.getInput('app_name');
             const artifact = core.getInput('artifact_location');
+            const isDeploy = core.getInput('deploy') === 'true';
             const pclVersion = core.getInput('pcl_version') || '1.1.0';
             // Set environment variables
             process.env.PCL_AUTH_TOKEN = token;
-            process.env.PCL_ENDPOINT = 'https://manage.dev02-head.payara.cloud'; // Or use a dynamic input
-            process.env.PCL_CLIENT_ID = 'OPWL6h4SUxPHa1rMZ9flPStKkxnMQj8H';
             // Download PCL
             const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
             const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
@@ -29354,8 +29389,10 @@ function main() {
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
             core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
             yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
-            // Step 2: Deploy the WAR file
-            // await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
+            if (isDeploy) {
+                core.info('Deploying to Payara Cloud...');
+                yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName);
+            }
             core.info('Deployment to Payara Cloud completed.');
         }
         catch (error) {

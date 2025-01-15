@@ -5,8 +5,7 @@ import { uploadToPayaraCloud } from './actions/upload';
 import { deployToPayaraCloud } from './actions/deploy';
 
 async function main() {
-        core.info('Starting PCL command...');
-        core.setOutput('log', 'Starting PCL command...');
+        core.debug('Starting PCL command...');
     try {
         // Retrieve input parameters
         const token = core.getInput('token');
@@ -23,8 +22,7 @@ async function main() {
         // Download PCL
         const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
         const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
-
-        core.setOutput('download_source', pclBinaryUrl);
+        core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
 
         await downloadPclJarFile(pclBinaryUrl, pclJarPath);
 
@@ -36,9 +34,8 @@ async function main() {
 
         core.info('Deployment to Payara Cloud completed.');
     } catch (error) {
-        // @ts-ignore
-        core.error((error as Error).stack);
-        core.error((error as Error).message);
+        core.debug(`Error: ${(error as Error).message}`);
+        core.debug(`Error: ${(error as Error).stack}`);
         core.setFailed(`Action failed: ${(error as Error).message}`);
     }
 }

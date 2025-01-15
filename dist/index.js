@@ -29352,6 +29352,7 @@ function main() {
             const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
             core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
+            core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
             yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
             // Step 2: Deploy the WAR file
             // await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);

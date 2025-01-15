@@ -26,6 +26,7 @@ async function main() {
         core.debug(`Downloading PCL JAR file from ${pclBinaryUrl}...`);
 
         await downloadPclJarFile(pclBinaryUrl, pclJarPath);
+        core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
         await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact);
 
         // Step 2: Deploy the WAR file

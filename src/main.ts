@@ -5,9 +5,9 @@ import { uploadToPayaraCloud } from './actions/upload';
 import { deployToPayaraCloud } from './actions/deploy';
 
 async function main() {
-    try {
         core.info('Starting PCL command...');
-
+        core.setOutput('log', 'Starting PCL command...');
+    try {
         // Retrieve input parameters
         const token = core.getInput('token');
         const namespace = core.getInput('namespace');
@@ -23,6 +23,9 @@ async function main() {
         // Download PCL
         const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
         const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
+
+        core.setOutput('download_source', pclBinaryUrl);
+
         await downloadPclJarFile(pclBinaryUrl, pclJarPath);
 
         // Step 1: Upload the WAR file
@@ -33,6 +36,9 @@ async function main() {
 
         core.info('Deployment to Payara Cloud completed.');
     } catch (error) {
+        // @ts-ignore
+        core.error((error as Error).stack);
+        core.error((error as Error).message);
         core.setFailed(`Action failed: ${(error as Error).message}`);
     }
 }

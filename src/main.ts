@@ -13,12 +13,11 @@ async function main() {
         const namespace = core.getInput('namespace');
         const appName = core.getInput('app_name');
         const artifact = core.getInput('artifact_location');
-        const pclVersion = core.getInput('pcl_version') || '1.0.1';
+        const isDeploy = core.getInput('deploy') === 'true';
+        const pclVersion = core.getInput('pcl_version') || '1.1.0';
 
         // Set environment variables
         process.env.PCL_AUTH_TOKEN = token;
-        process.env.PCL_ENDPOINT = 'https://manage.dev02-head.payara.cloud'; // Or use a dynamic input
-        process.env.PCL_CLIENT_ID = 'OPWL6h4SUxPHa1rMZ9flPStKkxnMQj8H';
 
         // Download PCL
         const pclBinaryUrl = `https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/${pclVersion}/pcl-${pclVersion}.jar`;
@@ -29,8 +28,10 @@ async function main() {
         core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
         await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact);
 
-        // Step 2: Deploy the WAR file
-        // await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
+        if (isDeploy) {
+            core.info('Deploying to Payara Cloud...');
+            await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
+        }
 
         core.info('Deployment to Payara Cloud completed.');
     } catch (error) {

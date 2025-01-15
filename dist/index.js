@@ -29342,7 +29342,7 @@ function main() {
             const namespace = core.getInput('namespace');
             const appName = core.getInput('app_name');
             const artifact = core.getInput('artifact_location');
-            const pclVersion = core.getInput('pcl_version') || '1.0.1';
+            const pclVersion = core.getInput('pcl_version') || '1.1.0';
             // Set environment variables
             process.env.PCL_AUTH_TOKEN = token;
             process.env.PCL_ENDPOINT = 'https://manage.dev02-head.payara.cloud'; // Or use a dynamic input

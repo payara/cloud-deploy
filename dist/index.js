@@ -29188,16 +29188,11 @@ exports.deployToPayaraCloud = deployToPayaraCloud;
 const pcl_1 = __nccwpck_require__(5850);
 function deployToPayaraCloud(pclExecutable, subscriptionName, namespace, appName) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const args = ['deploy', '-n', namespace, '-a', appName];
-            if (subscriptionName) {
-                args.push('-s', subscriptionName);
-            }
-            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
+        const args = ['deploy', '-n', namespace, '-a', appName];
+        if (subscriptionName) {
+            args.push('-s', subscriptionName);
         }
-        catch (error) {
-            throw new Error(`Failed to deploy WAR file: ${error.message}`);
-        }
+        yield (0, pcl_1.runPclCommand)(pclExecutable, args);
     });
 }
 
@@ -29223,17 +29218,12 @@ exports.uploadToPayaraCloud = uploadToPayaraCloud;
 const pcl_1 = __nccwpck_require__(5850);
 function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName, warFile) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const args = ['upload', '-n', namespace, '-a', appName];
-            if (subscriptionName) {
-                args.push('-s', subscriptionName);
-            }
-            args.push(warFile);
-            yield (0, pcl_1.runPclCommand)(pclExecutable, args);
+        const args = ['upload', '-n', namespace, '-a', appName];
+        if (subscriptionName) {
+            args.push('-s', subscriptionName);
         }
-        catch (error) {
-            throw new Error(`Failed to upload WAR file: ${error.message}`);
-        }
+        args.push(warFile);
+        yield (0, pcl_1.runPclCommand)(pclExecutable, args);
     });
 }
 

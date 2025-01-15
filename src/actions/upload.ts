@@ -1,4 +1,4 @@
-import { runPclCommand } from '../pcl';
+import {runPclCommand} from '../pcl';
 
 export async function uploadToPayaraCloud(
     pclExecutable: string,
@@ -7,17 +7,13 @@ export async function uploadToPayaraCloud(
     appName: string,
     warFile: string
 ) {
-    try {
-        const args: string[] = ['upload', '-n', namespace, '-a', appName];
+    const args: string[] = ['upload', '-n', namespace, '-a', appName];
 
-        if (subscriptionName) {
-            args.push('-s', subscriptionName);
-        }
-
-        args.push(warFile);
-
-        await runPclCommand(pclExecutable, args);
-    } catch (error) {
-        throw new Error(`Failed to upload WAR file: ${(error as Error).message}`);
+    if (subscriptionName) {
+        args.push('-s', subscriptionName);
     }
+
+    args.push(warFile);
+
+    await runPclCommand(pclExecutable, args);
 }

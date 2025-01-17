@@ -3,7 +3,7 @@ import * as core from '@actions/core';
 
 export async function ensureJavaIsAvailable() {
     try {
-        await exec.exec('java', ['-version'], {
+        await exec.exec(getJava(21), ['-version'], {
             silent: true,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
@@ -31,7 +31,7 @@ export async function runPclCommand(command: string, args: string[]) {
         const javaArgs = ['-jar', command, ...args];
         core.debug(`Running PCL command: java ${javaArgs.join(' ')}`);
 
-        await exec.exec('java', javaArgs, {
+        await exec.exec(getJava(21), javaArgs, {
             silent: false,
             listeners: {
                 stdout: (data: Buffer) => core.info(data.toString()),
@@ -49,4 +49,34 @@ export async function runPclCommand(command: string, args: string[]) {
     } catch (error) {
         core.setFailed(`Failed to execute PCL command: ${(error as Error).message}`);
     }
+}
+
+function getJava(version: number): string {
+    let javaHome: string | undefined;
+
+    // get the java home env variable based on version
+    switch (version) {
+        case 8:
+            javaHome = process.env['JAVA_HOME_8_X64'];
+            break;
+        case 11:
+            javaHome = process.env['JAVA_HOME_11_X64'];
+            break;
+        case 17:
+            javaHome =  process.env['JAVA_HOME_17_X64'];
+            break;
+        case 21:
+            javaHome = process.env['JAVA_HOME_21_X64'];
+            break;
+        default:
+            javaHome = process.env['JAVA_HOME'];
+            break;
+    }
+
+    if (javaHome) {
+        return `${javaHome}/bin/java`;
+    } else {
+        throw new Error(`Cannot find Java ${version} in variables`);
+    }
+
 }

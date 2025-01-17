@@ -51,7 +51,7 @@ export async function runPclCommand(command: string, args: string[]) {
     }
 }
 
-function getJava(version: number): string {
+export function getJava(version: number): string {
     let javaHome: string | undefined;
 
     // get the java home env variable based on version

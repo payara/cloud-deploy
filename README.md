@@ -38,5 +38,5 @@ with:
     namespace: 'your-namespace'
     app_name: 'your-app'
     artifact_location: 'your-artifact.war'
-    deploy: 'true'
+    deploy: true
 ```

@@ -7,16 +7,6 @@ This repository contains a GitHub Action to automate the deployment of your appl
 - Deploy Java applications to Payara Cloud. 
 
 ---
-## Prerequisites
-Make sure to include `actions/setup-java` in your workflow to install and configure Java.
-
-```yaml
-name: Set up JDK
-uses: actions/setup-java@v4
-with:
-  java-version: '21'
-  distribution: 'zulu'
-```
 
 ## Inputs
 

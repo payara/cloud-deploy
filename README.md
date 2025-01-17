@@ -15,7 +15,7 @@ This repository contains a GitHub Action to automate the deployment of your appl
 - `namespace`: **Required**. The namespace under which your app will be deployed (e.g., your-namespace). 
 - `app_name`: **Optional**. The name of the app to deploy (e.g., your-app). 
 - `artifact_location`: **Required**. The path to the .war file to deploy (e.g., ./target/my-app.war).
-- `deploy`: **Optional**. Set to `false` if the application should only be uploaded to Payara Cloud, but not deployed. Default is `true`.
+- `deploy`: **Optional**. Set to `false` if the application should only be uploaded to Payara Cloud, but not deployed. Set to `true` to upload and deploy the application in one step.
 - `pcl_version`: **Optional**. The version of the Payara Cloud CLI to use. Default is '1.1.0'.
 
 ## Example Usage

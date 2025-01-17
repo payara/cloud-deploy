@@ -12,14 +12,14 @@ inputs:
     required: true
   app_name:
     description: 'The name of the app to deploy'
-    required: true
+    required: false
   artifact_location:
     description: 'The location of the artifact (WAR) to deploy'
-    required: true
+    required: false
   deploy:
     description: 'Deploy the app'
     required: false
-    default: 'true'
+    default: true
   pcl_version:
     description: 'Version of PCL to download'
     required: false

@@ -29169,36 +29169,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ 7930:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deployToPayaraCloud = deployToPayaraCloud;
-const pcl_1 = __nccwpck_require__(5850);
-function deployToPayaraCloud(pclExecutable, subscriptionName, namespace, appName) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const args = ['deploy', '-n', namespace, '-a', appName];
-        if (subscriptionName) {
-            args.push('-s', subscriptionName);
-        }
-        yield (0, pcl_1.runPclCommand)(pclExecutable, args);
-    });
-}
-
-
-/***/ }),
-
 /***/ 4424:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -29216,13 +29186,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.uploadToPayaraCloud = uploadToPayaraCloud;
 const pcl_1 = __nccwpck_require__(5850);
-function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName, warFile) {
+function uploadToPayaraCloud(pclExecutable, subscriptionName, namespace, appName, warFile, isDeploy) {
     return __awaiter(this, void 0, void 0, function* () {
-        const args = ['upload', '-n', namespace, '-a', appName];
+        const args = ['upload', '-n', namespace];
         if (subscriptionName) {
             args.push('-s', subscriptionName);
         }
+        if (appName) {
+            args.push('-a', appName);
+        }
         args.push(warFile);
+        if (isDeploy) {
+            args.push('--deploy');
+        }
         yield (0, pcl_1.runPclCommand)(pclExecutable, args);
     });
 }
@@ -29357,7 +29333,6 @@ const core = __importStar(__nccwpck_require__(8478));
 const path = __importStar(__nccwpck_require__(6928));
 const download_1 = __nccwpck_require__(9341);
 const upload_1 = __nccwpck_require__(4424);
-const deploy_1 = __nccwpck_require__(7930);
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -29367,7 +29342,7 @@ function main() {
             const namespace = core.getInput('namespace');
             const appName = core.getInput('app_name');
             const artifact = core.getInput('artifact_location');
-            const isDeploy = core.getInput('deploy') === 'true';
+            const isDeploy = core.getBooleanInput('deploy');
             const pclVersion = core.getInput('pcl_version') || '1.1.0';
             // Set environment variables
             process.env.PCL_AUTH_TOKEN = token;
@@ -29376,10 +29351,7 @@ function main() {
             const pclJarPath = path.join(__dirname, `pcl-${pclVersion}.jar`);
             yield (0, download_1.downloadPclJarFile)(pclBinaryUrl, pclJarPath);
             core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
-            yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact);
-            if (isDeploy) {
-                yield (0, deploy_1.deployToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName);
-            }
+            yield (0, upload_1.uploadToPayaraCloud)(pclJarPath, subscriptionName, namespace, appName, artifact, isDeploy);
         }
         catch (error) {
             core.setFailed(`Action failed: ${error.message}`);

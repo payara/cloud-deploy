@@ -12,7 +12,7 @@ async function main() {
         const namespace = core.getInput('namespace');
         const appName = core.getInput('app_name');
         const artifact = core.getInput('artifact_location');
-        const isDeploy = core.getInput('deploy') === 'true';
+        const isDeploy = core.getBooleanInput('deploy');
         const pclVersion = core.getInput('pcl_version') || '1.1.0';
 
         // Set environment variables
@@ -24,11 +24,7 @@ async function main() {
 
         await downloadPclJarFile(pclBinaryUrl, pclJarPath);
         core.debug(`PCL JAR file downloaded to ${pclJarPath}`);
-        await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact);
-
-        if (isDeploy) {
-            await deployToPayaraCloud(pclJarPath, subscriptionName, namespace, appName);
-        }
+        await uploadToPayaraCloud(pclJarPath, subscriptionName, namespace, appName, artifact, isDeploy);
     } catch (error) {
         core.setFailed(`Action failed: ${(error as Error).message}`);
     }

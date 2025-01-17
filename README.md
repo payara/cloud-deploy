@@ -14,7 +14,7 @@ Make sure to include `actions/setup-java` in your workflow to install and config
 name: Set up JDK
 uses: actions/setup-java@v4
 with:
-  java-version: '11'
+  java-version: '21'
   distribution: 'zulu'
 ```
 
@@ -23,7 +23,7 @@ with:
 - `token`: **Required**. The Payara Cloud CLI token. You can create a token by running `pcl login --print-token` and following the instructions.
 - `subscription_name`: **Optional**. Only required if your account has access to multiple subscriptions. Provide the subscription name to specify which subscription to use.
 - `namespace`: **Required**. The namespace under which your app will be deployed (e.g., your-namespace). 
-- `app_name`: **Required**. The name of the app to deploy (e.g., your-app). 
+- `app_name`: **Optional**. The name of the app to deploy (e.g., your-app). 
 - `artifact_location`: **Required**. The path to the .war file to deploy (e.g., ./target/my-app.war).
 - `deploy`: **Optional**. Set to 'true' to deploy the application after uploading the artifact. Default is 'true'.
 - `pcl_version`: **Optional**. The version of the Payara Cloud CLI to use. Default is '1.1.0'.

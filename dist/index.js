@@ -29418,23 +29418,22 @@ const core = __importStar(__nccwpck_require__(8478));
 function ensureJavaIsAvailable() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.debug('Checking if Java is available...');
-            core.debug(`PATH: ${process.env['RUNNER_TOOL_CACHE']}`);
-            // await exec.exec(, ['-version'], {
-            //     silent: true,
-            //     listeners: {
-            //         stdout: (data: Buffer) => core.info(data.toString()),
-            //         stderr: (data: Buffer) => {
-            //             const message = data.toString();
-            //             // Only log certain critical errors as stderr
-            //             if (message.includes('ERROR') || message.includes('Failed')) {
-            //                 core.error(message);
-            //             } else {
-            //                 core.info(message); // Log informational messages in stdout
-            //             }
-            //         },
-            //     }
-            // });
+            yield exec.exec(getJava(21), ['-version'], {
+                silent: true,
+                listeners: {
+                    stdout: (data) => core.info(data.toString()),
+                    stderr: (data) => {
+                        const message = data.toString();
+                        // Only log certain critical errors as stderr
+                        if (message.includes('ERROR') || message.includes('Failed')) {
+                            core.error(message);
+                        }
+                        else {
+                            core.info(message); // Log informational messages in stdout
+                        }
+                    },
+                }
+            });
         }
         catch (error) {
             core.setFailed('Java is not installed. Please ensure actions/setup-java is used in your workflow.');
@@ -29448,7 +29447,7 @@ function runPclCommand(command, args) {
         try {
             const javaArgs = ['-jar', command, ...args];
             core.debug(`Running PCL command: java ${javaArgs.join(' ')}`);
-            yield exec.exec('java', javaArgs, {
+            yield exec.exec(getJava(21), javaArgs, {
                 silent: false,
                 listeners: {
                     stdout: (data) => core.info(data.toString()),
@@ -29469,6 +29468,33 @@ function runPclCommand(command, args) {
             core.setFailed(`Failed to execute PCL command: ${error.message}`);
         }
     });
+}
+function getJava(version) {
+    let javaHome;
+    // get the java home env variable based on version
+    switch (version) {
+        case 8:
+            javaHome = process.env['JAVA_HOME_8_X64'];
+            break;
+        case 11:
+            javaHome = process.env['JAVA_HOME_11_X64'];
+            break;
+        case 17:
+            javaHome = process.env['JAVA_HOME_17_X64'];
+            break;
+        case 21:
+            javaHome = process.env['JAVA_HOME_21_X64'];
+            break;
+        default:
+            javaHome = process.env['JAVA_HOME'];
+            break;
+    }
+    if (javaHome) {
+        return `${javaHome}/bin/java`;
+    }
+    else {
+        throw new Error(`Cannot find Java ${version} in variables`);
+    }
 }
 
 

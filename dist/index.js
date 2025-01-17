@@ -29418,22 +29418,23 @@ const core = __importStar(__nccwpck_require__(8478));
 function ensureJavaIsAvailable() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield exec.exec('java', ['-version'], {
-                silent: true,
-                listeners: {
-                    stdout: (data) => core.info(data.toString()),
-                    stderr: (data) => {
-                        const message = data.toString();
-                        // Only log certain critical errors as stderr
-                        if (message.includes('ERROR') || message.includes('Failed')) {
-                            core.error(message);
-                        }
-                        else {
-                            core.info(message); // Log informational messages in stdout
-                        }
-                    },
-                }
-            });
+            core.debug('Checking if Java is available...');
+            core.debug(`PATH: ${process.env['RUNNER_TOOL_CACHE']}`);
+            // await exec.exec(, ['-version'], {
+            //     silent: true,
+            //     listeners: {
+            //         stdout: (data: Buffer) => core.info(data.toString()),
+            //         stderr: (data: Buffer) => {
+            //             const message = data.toString();
+            //             // Only log certain critical errors as stderr
+            //             if (message.includes('ERROR') || message.includes('Failed')) {
+            //                 core.error(message);
+            //             } else {
+            //                 core.info(message); // Log informational messages in stdout
+            //             }
+            //         },
+            //     }
+            // });
         }
         catch (error) {
             core.setFailed('Java is not installed. Please ensure actions/setup-java is used in your workflow.');

@@ -4,22 +4,26 @@ inputs:
   token:
     description: 'token obtained from `pcl login --print-token` and stored in secrets'
     required: true
-  cloud_subscription_id:
-    description: 'The Payara Cloud subscription ID'
-    required: true
+  subscription_name:
+    description: 'Optional. Only required if your account has access to multiple subscriptions. Provide the subscription name to specify which subscription to use.'
+    required: false
   namespace:
     description: 'The namespace under which the app is deployed'
     required: true
   app_name:
     description: 'The name of the app to deploy'
-    required: true
+    required: false
   artifact_location:
     description: 'The location of the artifact (WAR) to deploy'
-    required: true
+    required: false
+  deploy:
+    description: 'Deploy the app'
+    required: false
+    default: true
   pcl_version:
     description: 'Version of PCL to download'
     required: false
-    default: '1.0.1'
+    default: '1.1.0'
 runs:
   using: 'node12'
   main: 'dist/index.js'

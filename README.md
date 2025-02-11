@@ -21,7 +21,7 @@ This repository contains a GitHub Action to automate the deployment of your appl
 ## Example Usage
 
 ```yaml
-uses: payara/actions/cloud-deploy@v1
+uses: payara/cloud-deploy@v1
 with:
     token: ${{ secrets.PCL_TOKEN }}
     subscription_name: 'your-subscription-name'

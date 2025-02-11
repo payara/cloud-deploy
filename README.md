@@ -30,3 +30,8 @@ with:
     artifact_location: 'your-artifact.war'
     deploy: true
 ```
+
+## Reference
+
+Payara Cloud CLI user guide: https://docs.payara.fish/cloud/docs/cli/user-guide.html
+

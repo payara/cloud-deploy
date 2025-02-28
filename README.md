@@ -3,7 +3,7 @@
 This repository contains a GitHub Action that automates deploying Jakarta EE and MicroProfile applications to Payara Cloud using the Payara Cloud CLI (PCL). It lets you deploy .war files by specifying parameters like subscription ID, namespace, app name, and artifact location.
 
 ## Features
-- Deploy Jakarta EE and MicroProfile applications to Payara Cloud
+- Upload and deploy Jakarta EE and MicroProfile applications to Payara Cloud
 
 ## Inputs
 - `token`: **Required**. Payara Cloud CLI token. Generate by running `pcl login --print-token`.

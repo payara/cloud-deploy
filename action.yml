@@ -1,7 +1,8 @@
 name: 'Payara Cloud CLI Action'
 description: 'Deploy an app to Payara Cloud using Payara Cloud CLI (PCL)'
-icon: 'cloud-upload'
-color: 'blue'  
+branding:
+  icon: 'upload-cloud'
+  color: 'orange'
 inputs:
   token:
     description: 'token obtained from `pcl login --print-token` and stored in secrets'
